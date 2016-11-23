@@ -40,9 +40,7 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
         meanSquareError = np.mean((regr.predict(self.xTestReshaped) - (self.yTestReshaped)))
         varianceScore = regr.score((self.xTestReshaped), (self.yTestReshaped))
 
-        print("The mean square error: " + str(meanSquareError))
-        print("Variance score: " + str(varianceScore))
-        print("Linear regression coeffitient: " + str(regr.coef_))
+        self.InfoBox("The mean square error: " + str(meanSquareError)+"\n\rVariance score: " + str(varianceScore)+"\n\rLinear regression coeffitient: " + str(regr.coef_))
 
             # meanSquareError = np.mean((regr.predict(np.uint32(self.xTrain)) - np.uint32(self.yTrain)))
             # print(meanSquareError)
