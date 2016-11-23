@@ -37,7 +37,7 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
         regr = linear_model.LinearRegression(fit_intercept=False)
         regr.fit(self.xTrainReshaped, self.yTrainReshaped)
         LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
-        meanSquareError = np.mean(regr.predict(((self.xTestReshaped) - (self.yTestReshaped))**2))
+        meanSquareError = np.mean(regr.predict((self.xTestReshaped) - (self.yTestReshaped))**2)
         varianceScore = regr.score((self.xTestReshaped), (self.yTestReshaped))
 
         self.InfoBox("The mean square error: " + str(meanSquareError)+"\n\rVariance score: " + str(varianceScore)+"\n\rLinear regression coeffitient: " + str(regr.coef_))
