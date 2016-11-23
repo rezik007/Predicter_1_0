@@ -37,7 +37,7 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
         regr = linear_model.LinearRegression(fit_intercept=False)
         regr.fit(self.xTrainReshaped, self.yTrainReshaped)
         LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
-        meanSquareError = np.mean((regr.predict(self.xTestReshaped) - (self.yTestReshaped)))
+        meanSquareError = np.mean(regr.predict(((self.xTestReshaped) - (self.yTestReshaped))**2))
         varianceScore = regr.score((self.xTestReshaped), (self.yTestReshaped))
 
         self.InfoBox("The mean square error: " + str(meanSquareError)+"\n\rVariance score: " + str(varianceScore)+"\n\rLinear regression coeffitient: " + str(regr.coef_))
@@ -60,6 +60,7 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
         self.textEdit_4.setText("101")
         self.textEdit_5.setText("150")
         self.textEdit.setText("roundedNumbersLog.txt")
+
         for index, line in enumerate(open(self.textEdit.toPlainText(), "r")):
             if  index >= int(self.textEdit_2.toPlainText()) and index <= int(self.textEdit_3.toPlainText()):
                 self.textBrowser.append(line)
@@ -76,13 +77,6 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
         self.xTestReshaped = np.array(self.xTest, dtype=int).reshape(-1, 1)
         self.yTestReshaped = np.array(self.yTest, dtype=int).reshape(-1, 1)
         self.Engine()
-        # regr.fit(self.xTrain, self.yTrain)
-        #
-        # LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
-
-        # meanSquareError = np.mean((regr.predict(np.uint32(xTest)) - np.uint32(yTest)))
-        # varianceScore = regr.score(np.uint32(xTest), np.uint32(yTest))
-
 
     @pyqtSlot()
     def on_click1(self):
