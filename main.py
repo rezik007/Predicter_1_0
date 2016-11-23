@@ -16,6 +16,8 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
     yTrain = []
     xTest = []
     yTest = []
+    xTrainReshaped = []
+    yTrainReshaped = []
 
     def __init__(self):
         super().__init__()
@@ -30,14 +32,21 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
         self.msgText.setText(msgText)
         self.msgText.exec()
 
+    # Back up the reference to the exceptionhook
     def Engine(self):
-        regr = linear_model.LinearRegression()
+        regr = linear_model.LinearRegression(fit_intercept=False)
+        regr.fit(self.xTrainReshaped, self.yTrainReshaped)
+        LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
+        meanSquareError = np.mean((regr.predict(self.xTestReshaped) - (self.yTestReshaped)))
+        varianceScore = regr.score((self.xTestReshaped), (self.yTestReshaped))
 
-        try:
-            # LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
-            regr.fit(self.xTrain, self.yTrain)
-        except Exception:
-            print("Blad wywolania zewnetrznej funkcji")
+        print("The mean square error: " + str(meanSquareError))
+        print("Variance score: " + str(varianceScore))
+        print("Linear regression coeffitient: " + str(regr.coef_))
+
+            # meanSquareError = np.mean((regr.predict(np.uint32(self.xTrain)) - np.uint32(self.yTrain)))
+            # print(meanSquareError)
+
 
 
         # meanSquareError = np.mean((regr.predict(np.uint32(self.xTest)) - np.uint32(self.yTest)))
@@ -48,48 +57,34 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
         # self.msgText.exec()
 
     def LoadDataFromFile(self):
-        self.textEdit_2.setText("0")
-        self.textEdit_3.setText("3")
-        self.textEdit_4.setText("4")
-        self.textEdit_5.setText("7")
-        self.textEdit.setText("aaa.txt")
+        self.textEdit_2.setText("1")
+        self.textEdit_3.setText("100")
+        self.textEdit_4.setText("101")
+        self.textEdit_5.setText("150")
+        self.textEdit.setText("roundedNumbersLog.txt")
         for index, line in enumerate(open(self.textEdit.toPlainText(), "r")):
             if  index >= int(self.textEdit_2.toPlainText()) and index <= int(self.textEdit_3.toPlainText()):
                 self.textBrowser.append(line)
-                self.xTrain.append(line.split("|")[4])
-                self.yTrain.append(line.split("|")[21])
+                self.xTrain.append(int(line.split("|")[3]))
+                self.yTrain.append(int(line.split("|")[22]))
             elif index >= int(self.textEdit_4.toPlainText()) and index <= int(self.textEdit_5.toPlainText()):
                 self.textBrowser_2.append(line)
-                self.xTest.append(line.split("|")[4])
-                self.yTest.append(line.split("|")[21])
+                self.xTest.append(int(line.split("|")[3]))
+                self.yTest.append(int(line.split("|")[22]))
             else:
                 continue
-        self.xTrain = np.array(self.xTrain).reshape(-1, 1)
-        self.yTrain = np.array(self.yTrain).reshape(-1, 1)
-        regr = linear_model.LinearRegression()
-        regr.fit(self.xTrain, self.yTrain)
-
-        LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
+        self.xTrainReshaped = np.array(self.xTrain, dtype=int).reshape(-1, 1)
+        self.yTrainReshaped = np.array(self.yTrain, dtype=int).reshape(-1, 1)
+        self.xTestReshaped = np.array(self.xTest, dtype=int).reshape(-1, 1)
+        self.yTestReshaped = np.array(self.yTest, dtype=int).reshape(-1, 1)
+        self.Engine()
+        # regr.fit(self.xTrain, self.yTrain)
+        #
+        # LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
 
         # meanSquareError = np.mean((regr.predict(np.uint32(xTest)) - np.uint32(yTest)))
         # varianceScore = regr.score(np.uint32(xTest), np.uint32(yTest))
 
-
-
-
-    def SetDataSets(self, trainX, testX, trainY, testY):
-        for line in open(self.textEdit.toPlainText(), "r"):
-            trainX.append(line.split("|")[4])
-            if line.split("|")[23] == "y\n":
-                trainY.append(1)
-            else:
-                trainY.append(0)
-
-        trainX[0] = 0
-        trainX = np.array(trainX).reshape(-1, 1)
-        trainY = np.array(trainY).reshape(-1, 1)
-        print(trainX)
-        print(trainY)
 
     @pyqtSlot()
     def on_click1(self):
