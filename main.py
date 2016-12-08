@@ -7,6 +7,9 @@ import scipy
 import matplotlib.pyplot as plt
 from sklearn import linear_model, datasets
 from sklearn.linear_model import LinearRegression
+from sklearn import datasets, linear_model
+
+
 
 import gui
 
@@ -18,6 +21,7 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
     yTest = []
     xTrainReshaped = []
     yTrainReshaped = []
+    yChoose = 22
 
     def __init__(self):
         super().__init__()
@@ -32,7 +36,6 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
         self.msgText.setText(msgText)
         self.msgText.exec()
 
-    # Back up the reference to the exceptionhook
     def Engine(self):
         regr = linear_model.LinearRegression(fit_intercept=False)
         regr.fit(self.xTrainReshaped, self.yTrainReshaped)
@@ -42,34 +45,27 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
 
         self.InfoBox("The mean square error: " + str(meanSquareError)+"\n\rVariance score: " + str(varianceScore)+"\n\rLinear regression coeffitient: " + str(regr.coef_))
 
-            # meanSquareError = np.mean((regr.predict(np.uint32(self.xTrain)) - np.uint32(self.yTrain)))
-            # print(meanSquareError)
-
-
-
-        # meanSquareError = np.mean((regr.predict(np.uint32(self.xTest)) - np.uint32(self.yTest)))
-        # varianceScore = regr.score(np.uint32(self.xTest), np.uint32(self.yTest))
-        #
-        # self.msgText = QtWidgets.QMessageBox()
-        # self.msgText.setText("The mean square error: " + str(meanSquareError) + "Variance score: " + str(varianceScore) +"Linear regression coeffitient: " + str(regr.coef_))
-        # self.msgText.exec()
 
     def LoadDataFromFile(self):
         self.textEdit_2.setText("1")
-        self.textEdit_3.setText("100")
-        self.textEdit_4.setText("101")
-        self.textEdit_5.setText("150")
-        self.textEdit.setText("roundedNumbersLog.txt")
+        self.textEdit_3.setText("10000")
+        self.textEdit_4.setText("10001")
+        self.textEdit_5.setText("10050")
+        self.textEdit.setText("roundedNumbersLogFinal.txt")
+        if self.radioButton.isChecked():
+            self.yChoose = 22
+        elif self.radioButton_2.isChecked():
+            self.yChoose = 23
 
         for index, line in enumerate(open(self.textEdit.toPlainText(), "r")):
             if  index >= int(self.textEdit_2.toPlainText()) and index <= int(self.textEdit_3.toPlainText()):
                 self.textBrowser.append(line)
-                self.xTrain.append(int(line.split("|")[3]))
-                self.yTrain.append(int(line.split("|")[22]))
+                self.xTrain.append(int(line.split("|")[int(self.textEdit_6.toPlainText())]))
+                self.yTrain.append(int(line.split("|")[int(self.yChoose)]))
             elif index >= int(self.textEdit_4.toPlainText()) and index <= int(self.textEdit_5.toPlainText()):
                 self.textBrowser_2.append(line)
-                self.xTest.append(int(line.split("|")[3]))
-                self.yTest.append(int(line.split("|")[22]))
+                self.xTest.append(int(line.split("|")[int(self.textEdit_6.toPlainText())]))
+                self.yTest.append(int(line.split("|")[int(self.yChoose)]))
             else:
                 continue
         self.xTrainReshaped = np.array(self.xTrain, dtype=int).reshape(-1, 1)
@@ -88,38 +84,3 @@ if __name__ == '__main__':
     mainDesing = Application()
     mainDesing.show()
     sys.exit(app.exec_())
-
-    # import numpy as np
-    # import scipy
-    # import matplotlib.pyplot as plt
-    # from sklearn import linear_model, datasets
-    # from sklearn.linear_model import LinearRegression
-    #
-    # xTrain = []
-    # yTrain = []
-    # for line in open("newLogWithoutQuestionMark.txt", "r"):
-    #     xTrain.append(line.split("|")[4])
-    #     if line.split("|")[23] == "y\n":
-    #         yTrain.append(1)
-    #     else:
-    #         yTrain.append(0)
-    #
-    # xTrain[0] = 0
-    # xTrainn = np.array(xTrain).reshape(-1, 1)
-    # yTrainn = np.array(yTrain).reshape(-1, 1)
-    #
-    # xTest = xTrainn[101:150]
-    # yTest = yTrainn[101:150]
-    #
-    # regr = linear_model.LinearRegression()
-    # regr.fit(xTrainn[:100], yTrainn[:100])
-    #
-    # LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
-    #
-    # meanSquareError = np.mean((regr.predict(np.uint32(xTest)) - np.uint32(yTest)))
-    # varianceScore = regr.score(np.uint32(xTest), np.uint32(yTest))
-    #
-    # print("The mean square error: " + str(meanSquareError))
-    # print("Variance score: " + str(varianceScore))
-    # print("Linear regression coeffitient: " + str(regr.coef_))
-    # print(regr.predict(np.uint32(xTest)))
