@@ -35,15 +35,22 @@ class Application(QtWidgets.QMainWindow, gui.Ui_MainWindow):
         self.msgText = QtWidgets.QMessageBox()
         self.msgText.setText(msgText)
         self.msgText.exec()
+        print(msgText)
 
     def Engine(self):
         regr = linear_model.LinearRegression(fit_intercept=False)
         regr.fit(self.xTrainReshaped, self.yTrainReshaped)
         LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False)
-        meanSquareError = np.mean(regr.predict((self.xTestReshaped) - (self.yTestReshaped))**2)
+        meanSquareError = np.mean((regr.predict(self.xTestReshaped) - (self.yTestReshaped))**2)
         varianceScore = regr.score((self.xTestReshaped), (self.yTestReshaped))
+        yLength = len(self.yTest)
 
-        self.InfoBox("The mean square error: " + str(meanSquareError)+"\n\rVariance score: " + str(varianceScore)+"\n\rLinear regression coeffitient: " + str(regr.coef_))
+
+        self.InfoBox("Linear regression coeffitient: " + str(regr.coef_)+"\n\rThe mean square error: "
+                     + str(meanSquareError)+"\n\rVariance score: " + str(varianceScore)+"\n\rReal Y value:"
+                     +str(self.yTest[yLength-1])+"\n\rPredicted Y value:"
+                     +str(regr.predict(self.xTestReshaped[self.textEdit_6.toPlainText()]))
+                     +"\n\rChosen X kolumn:"+str(self.textEdit_6.toPlainText()))
 
 
     def LoadDataFromFile(self):

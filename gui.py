@@ -115,7 +115,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Predictor_v_1_0"))
         self.pushButton.setText(_translate("MainWindow", "Start"))
         self.label.setText(_translate("MainWindow", "Ścieżka do pliku z logami:"))
         self.label_2.setText(_translate("MainWindow", "Załadowane dane testowe:"))
